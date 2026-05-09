@@ -560,11 +560,13 @@ mod tests {
         ];
         let out = render_system(&LLMId::from("byop:p:deepseek-chat"), &ctx, &[], false);
         // system prompt 不再包含 env 字段(已移至 user message)。
-        // Working directory: 大写开头是 env.j2 内的字段名,与小写的引导文本区分。
+        // 大写开头字段名是 env.j2 模板内的输出,与小写引导文本区分。
         assert!(!out.contains("Working directory:"), "{out}");
-        // 静态引导提及了 <env> 标签,因此不能检查 "<env>" 子串。
-        // 验证关键字段 Shell 和 Platform 不在 system prompt 中即可。
+        assert!(!out.contains("Shell:"), "{out}");
+        assert!(!out.contains("Platform:"), "{out}");
         assert!(!out.contains("Model:"), "{out}");
+        assert!(!out.contains("Today's date:"), "{out}");
+        assert!(!out.contains("Git branch:"), "{out}");
     }
 
     #[test]
